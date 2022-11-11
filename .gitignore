@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+## FILE UPLOAD ###
+**/src/main/resources/uploads/tugas/
