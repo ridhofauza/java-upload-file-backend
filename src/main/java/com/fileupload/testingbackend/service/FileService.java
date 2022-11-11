@@ -6,22 +6,17 @@
 package com.fileupload.testingbackend.service;
 
 import com.fileupload.testingbackend.model.FileSiswa;
+import com.fileupload.testingbackend.model.dto.request.FileMeta;
 import com.fileupload.testingbackend.repository.FileRepository;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  *
@@ -33,7 +28,7 @@ public class FileService {
 
     private FileRepository fileRepository;
 
-    public Object create(String name, String description, MultipartFile fileTugas) throws URISyntaxException {
+    public FileSiswa create(String description, FileMeta fileMeta) throws URISyntaxException {
         // if directory not exist create directory
         try {
             String PATH = "src/main/resources/uploads/tugas/";
@@ -50,23 +45,17 @@ public class FileService {
             }
             
             // uploading file
-            byte[] bytes = fileTugas.getBytes();
-            File serverFile = new File(PATH + fileTugas.getOriginalFilename());
+            byte[] bytes = fileMeta.getBytes();
+            File serverFile = new File(PATH + fileMeta.getOriginalFilename());
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
             stream.write(bytes);
             stream.close();
             
-//            HashMap<String, String> hasil = new HashMap<>();
-//            hasil.put("nameSiswa", name);
-//            hasil.put("description", description);
-//            hasil.put("fileTugas", Long.toString(fileTugas.getSize()));
-//            hasil.put("nameDir", serverFile.getAbsolutePath());
-            
-            FileSiswa fileSiswa = new FileSiswa(null, fileTugas.getOriginalFilename(), description);
+            FileSiswa fileSiswa = new FileSiswa(null, fileMeta.getOriginalFilename(), description);
             
             return fileRepository.save(fileSiswa);
         } catch (IOException e) {
-            return e.getMessage();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
     

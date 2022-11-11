@@ -5,6 +5,8 @@
  */
 package com.fileupload.testingbackend.controller;
 
+import com.fileupload.testingbackend.model.FileSiswa;
+import com.fileupload.testingbackend.model.dto.request.FileMeta;
 import com.fileupload.testingbackend.service.FileService;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -35,11 +36,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/file")
 @AllArgsConstructor
 public class FileController {
+    
     private FileService fileService;
     
     @PostMapping
-    public ResponseEntity<Object> fileUpload(@RequestPart String name, @RequestPart String description, MultipartFile fileTugas) throws FileNotFoundException, URISyntaxException {
-        return new ResponseEntity(fileService.create(name, description, fileTugas), HttpStatus.OK);
+    public ResponseEntity<FileSiswa> fileUpload(@RequestPart String description, @RequestPart FileMeta fileMeta) throws FileNotFoundException, URISyntaxException {
+        return new ResponseEntity(fileService.create(description, fileMeta), HttpStatus.OK);
     }
     
     @GetMapping("/{id}")
